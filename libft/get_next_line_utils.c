@@ -1,35 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bpaez-mo <bpaez-mo@student.42barcelon      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 09:22:44 by bpaez-mo          #+#    #+#             */
-/*   Updated: 2025/05/16 09:40:56 by bpaez-mo         ###   ########.fr       */
+/*   Created: 2025/07/08 20:47:06 by bpaez-mo          #+#    #+#             */
+/*   Updated: 2025/07/08 21:46:39 by bpaez-mo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_read_and_join(int fd, char *buffer)
 {
-	size_t	s1_len;
-	size_t	s2_len;
-	size_t	total_len;
-	char	*strjoin;
+	char		*temp;
+	char		*joined;
+	ssize_t		r;
 
-	if (!s2)
+	temp = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!temp)
 		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	total_len = s1_len + s2_len + 1;
-	strjoin = (char *)malloc(sizeof(char) * total_len);
-	if (!strjoin)
+	r = read(fd, temp, BUFFER_SIZE);
+	if (r == -1)
+	{
+		free(temp);
+		if (buffer)
+			free(buffer);
 		return (NULL);
-	ft_strlcpy(strjoin, s1, total_len);
-	ft_strlcat(strjoin, s2, total_len);
-	return (strjoin);
+	}
+	if (r == 0)
+	{
+		free(temp);
+		return (buffer);
+	}
+	temp[r] = '\0';
+	joined = ft_strjoin(buffer, temp);
+	free(buffer);
+	free(temp);
+	return (joined);
 }

@@ -16,6 +16,8 @@ char	*ft_strchr(const char *s, int c)
 {
 	unsigned char	j;
 
+	if (!s)
+		return (NULL);
 	j = (unsigned char)c;
 	while (*s)
 	{
